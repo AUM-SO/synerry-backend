@@ -38,11 +38,11 @@
 
 /**
  * @swagger
- * /api/getuserdata:
- *   get:
+ * /api/filteruserdata:
+ *   post:
  *     tags:
- *       - getuserdata
- *     description: get All UserData 
+ *       - filteruserdata
+ *     description: filter User Data
  *     produces:
  *       - application/json
  *     responses:
@@ -59,7 +59,7 @@
  *                 data:
  *                   type: object
  *                   items:
- *                     type: array
+ *                     type: object
  *                     properties:
  *                       key:
  *                         type: string
@@ -79,13 +79,13 @@
  *                   example: error, something with wrong
  */
 
+
 import express from 'express';
 const router = express.Router();
-import { CounterVisitUsers, getUserData } from '../controllers/userDataController.js'
+import { CounterVisitUsers, FilterUserData } from '../controllers/userDataController.js'
 
 router.post('/userdata', CounterVisitUsers);
 
-router.get('/getuserdata', getUserData);
-
+router.post('/filteruserdata', FilterUserData);
 
 export default router;

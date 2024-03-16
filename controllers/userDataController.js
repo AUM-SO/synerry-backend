@@ -1,3 +1,4 @@
+import { query } from 'express';
 import User from '../models/userdataModel.js'
 import moment from 'moment-timezone';
 
@@ -6,13 +7,19 @@ const CounterVisitUsers = async (req, res) => {
         const { ipAddress, browserName, browserVersion, OSName, onWeb, deviceType } = req.body;
 
         const nowInThailand = moment.tz('Asia/Bangkok');
-        const timestamps = nowInThailand.format('HH:mm   DD/MM/YYYY');
+
+        const datestamps = nowInThailand.format('DD/MM/YYYY');
+        const timestamps = nowInThailand.format('HH:mm');
+
+        console.log('datestamps ==>', datestamps);
+        console.log('timestamps ==>', timestamps);
 
         const newUserData = new User({
             ipAddress,
             browserName,
             browserVersion,
             OSName,
+            datestamps,
             timestamps,
             onWeb,
             deviceType,
@@ -20,116 +27,75 @@ const CounterVisitUsers = async (req, res) => {
 
         const savedUserData = await newUserData.save();
 
-        res.status(200).json({ success: "CounterVisitUsers is success", savedUserData })
+        res.status(200).json({ success: "Add CounterVisitUsers is success", savedUserData })
     } catch (error) {
         res.status(400).json({ error: "error, something with wrong" })
     }
 }
 
-
-/* const getUserData = async (req, res) => {
+const FilterUserData = async (req, res) => {
     try {
+        const { startTime, endTime, date, onWeb } = req.body;
 
-        // const userData = await User.find({});
-        // const userDataToDay = await User.aggregate([
-        //     {
-        //         $project: {
-        //             day: { $dateToString: { format: "%d/%m/%Y", date: "$createdAt" } },
-        //             // คุณสามารถเลือกเพิ่มเติม fields ที่คุณต้องการในการแสดงผลได้ตามต้องการ
-        //         }
-        //     },
-        //     {
-        //         $group: {
-        //             _id: "$day",
-        //             count: { $sum: 1 }
-        //             // คุณสามารถเพิ่ม fields ที่คุณต้องการในการแสดงผลได้ตามต้องการ
-        //         }
-        //     },
-        //     {
-        //         $project: {
-        //             _id: 0,
-        //             day: "$_id",
-        //             count: 1
-        //         }
-        //     }
-        // ]);
 
-        const userDataToDay = await User.aggregate([
-            {
-                $project: {
-                    day: { $dateToString: { format: "%d/%m/%Y", date: "$createdAt" } },
-                    onWeb: 1,
-                    deviceType: 1
-                }
-            },
-            {
-                $group: {
-                    _id: { day: "$day", onWeb: "$onWeb" },
-                    count: { $sum: 1 },
-                    deviceTypes: { $addToSet: "$deviceType" }
-                }
-            },
-            {
-                $group: {
-                    _id: "$_id.day",
-                    pages: {
-                        $addToSet: {
-                            page: "$_id.onWeb",
-                            count: "$count",
-                            deviceTypes: "$deviceTypes"
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    day: "$_id",
-                    pages: 1
-                }
+        if (!startTime && !endTime && !date && !onWeb) {
+
+            const userData = await User.find({});
+            res.status(200).json({ success: "CounterVisitUsers is success", userData })
+
+        } else if (date && onWeb !== "All") {
+            console.log('date only');
+
+            const dateTime = moment(date);
+            const formattedDateTime = dateTime.format('DD/MM/YYYY');
+
+            let query = {};
+
+            if (onWeb !== "All") {
+                query.datestamps = formattedDateTime;
+                query.onWeb = onWeb;
             }
-        ]);
 
-        const userDataToDay = await User.aggregate([
-            {
-              $project: {
-                day: { $dateToString: { format: "%d/%m/%Y", date: "$createdAt" } },
-                deviceType: 1
-              }
-            },
-            {
-              $group: {
-                _id: { day: "$day", deviceType: "$deviceType" },
-                count: { $sum: 1 }
-              }
-            },
-            {
-              $group: {
-                _id: "$_id.day",
-                pages: {
-                  $addToSet: {
-                    deviceType: "$_id.deviceType",
-                    count: "$count"
-                  }
-                }
-              }
-            },
-            {
-              $project: {
-                _id: 0,
-                day: "$_id",
-                devices: "$pages"
-              }
+            const userData = await User.find(query);
+            res.status(200).json({ success: "CounterVisitUsers is success", userData })
+        } else if (date && onWeb == "All") {
+            // console.log('date only');
+
+            const dateTime = moment(date);
+            const formattedDateTime = dateTime.format('DD/MM/YYYY');
+
+            let query = {};
+
+            if (onWeb == "All") {
+                query.datestamps = formattedDateTime;
             }
-          ]);
 
-        console.log(userDataToDay);
-        // console.log(userData);
+            const userData = await User.find(query);
+            res.status(200).json({ success: "CounterVisitUsers is success", userData })
 
-        res.status(200).json({ success: "CounterVisitUsers is success", userData, userDataToDay })
+        } else if (!date && onWeb !== "All") {
+            // console.log('page only');
+
+            let query = {};
+
+            if (onWeb !== "All") {
+                query.onWeb = onWeb;
+            }
+
+            const userData = await User.find(query);
+            res.status(200).json({ success: "CounterVisitUsers is success", userData })
+        } else if (!startTime && !endTime && !date && onWeb == "All") {
+            // console.log('All only');
+            
+            const userData = await User.find({});
+            res.status(200).json({ success: "CounterVisitUsers is success", userData })
+        }
+        
     } catch (error) {
-        res.status(400).json({ error: "error, something with wrong" })
+        res.status(400).json({ error: "error, something with wrong" });
     }
-} */
+};
 
-export { CounterVisitUsers, getUserData }
+
+
+export { CounterVisitUsers, FilterUserData } 

@@ -14,6 +14,9 @@ const UserDataSchema = new mongoose.Schema(
         OSName: {
             type: String,
         },
+        datestamps: {
+            type: String,
+        },
         timestamps: {
             type: String,
         },
@@ -23,9 +26,6 @@ const UserDataSchema = new mongoose.Schema(
         onWeb: {
             type: String,
         }
-        /* CounterVisit: {
-            type: Number,
-        } */
     }, { timestamps: true }
 );
 
