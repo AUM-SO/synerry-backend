@@ -16,6 +16,12 @@ const UserDataSchema = new mongoose.Schema(
         },
         timestamps: {
             type: String,
+        },
+        deviceType: {
+            type: String,
+        },
+        onWeb: {
+            type: String,
         }
         /* CounterVisit: {
             type: Number,
@@ -23,6 +29,6 @@ const UserDataSchema = new mongoose.Schema(
     }, { timestamps: true }
 );
 
-const Users = mongoose.model("Users", UserDataSchema);
+const User = mongoose.model("User", UserDataSchema);
 
-export default Users;
+export default User;
