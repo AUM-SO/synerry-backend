@@ -7,6 +7,37 @@
  *     description: Returns userdata
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: formData
+ *         name: ipAddress
+ *         description: IP Address
+ *         required: true
+ *         type: string
+ *       - in: formData
+ *         name: OSName
+ *         description: Operating System Name
+ *         required: true
+ *         type: string
+ *       - in: formData
+ *         name: browserName
+ *         description: Browser Name
+ *         required: true
+ *         type: string
+ *       - in: formData
+ *         name: browserVersion
+ *         description: Browser Version
+ *         required: true
+ *         type: string
+ *       - in: formData
+ *         name: deviceType
+ *         description: Device Type
+ *         required: true
+ *         type: string
+ *       - in: formData
+ *         name: onWeb
+ *         description: On Web
+ *         required: true
+ *         type: string
  *     responses:
  *       200:
  *         description: Successful operation
@@ -42,9 +73,30 @@
  *   post:
  *     tags:
  *       - filteruserdata
- *     description: filter User Data
+ *     description: Filter User Data
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: formData
+ *         name: date
+ *         description: Date for filtering user data
+ *         required: false
+ *         type: string
+ *       - in: formData
+ *         name: endTime
+ *         description: End time for filtering user data
+ *         required: false
+ *         type: string
+ *       - in: formData
+ *         name: onWeb
+ *         description: On Web
+ *         required: false
+ *         type: string
+ *       - in: formData
+ *         name: startTime
+ *         description: Start time for filtering user data
+ *         required: false
+ *         type: string
  *     responses:
  *       200:
  *         description: Successful operation
@@ -76,7 +128,7 @@
  *               properties:
  *                 error:
  *                   type: string
- *                   example: error, something with wrong
+ *                   example: error, something went wrong
  */
 
 
